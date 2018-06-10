@@ -1,4 +1,4 @@
-﻿using FluentValidator;
+﻿using ModernStore.Domain.ValueObjects;
 using ModernStore.Shared.Entities;
 using System;
 
@@ -6,28 +6,30 @@ namespace ModernStore.Domain.Entities
 {
     public class Customer : Entity
     {
-        public Customer(string firstName, string lastName, string email, User user)
+        public Customer(Name name, Email email, Document document, User user)
         {
-            FirstName = firstName;
-            LastName = lastName;
+            Name = name;
             Email = email;
+            Document = document;
             User = user;
+            BirthDay = null;
 
-            new ValidationContract<Customer>(this)
-                .IsRequired(x => x.FirstName)
-                .HasMaxLenght(x => x.FirstName, 60)
-                .HasMinLenght(x => x.LastName, 3)
-                .IsRequired(x => x.LastName)
-                .HasMaxLenght(x => x.LastName, 60)
-                .HasMinLenght(x => x.LastName, 3)
-                .IsEmail(x => x.Email);
+            AddNotifications(name.Notifications);
+            AddNotifications(email.Notifications);
+            AddNotifications(document.Notifications);
         }
 
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public DateTime BirthDay { get; private set; }
+        public Name Name { get; private set; }
+        public DateTime? BirthDay { get; private set; }
         public bool Active { get; private set; }
-        public string Email { get; private set; }
+        public Email Email { get; private set; }
         public User User { get; private set; }
+        public Document Document { get; private set; }
+
+        public void Update(Name name, DateTime birthDay)
+        {
+            Name = name;
+            BirthDay = birthDay;
+        }
     }
 }
