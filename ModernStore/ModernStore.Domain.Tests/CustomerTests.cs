@@ -17,7 +17,7 @@ namespace ModernStore.Domain.Tests
             var document = new Document("12988821259");
             var customer = new Customer(name, email, document, user);
 
-            Assert.IsFalse(customer.IsValid());
+            Assert.IsFalse(customer.Valid);
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace ModernStore.Domain.Tests
             var document = new Document("12988821259");
             var customer = new Customer(name, email, document, user);
 
-            Assert.IsFalse(customer.IsValid());
+            Assert.IsFalse(customer.Valid);
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace ModernStore.Domain.Tests
             var document = new Document("12988821259");
             var customer = new Customer(name, email, document, user);
 
-            Assert.IsFalse(customer.IsValid());
+            Assert.IsFalse(customer.Valid);
         }
 
         [TestMethod]
@@ -56,7 +56,7 @@ namespace ModernStore.Domain.Tests
             var document = new Document("11111111111");
             var customer = new Customer(name, email, document, user);
 
-            Assert.IsFalse(customer.IsValid());
+            Assert.IsFalse(customer.Valid);
         }
     }
 }

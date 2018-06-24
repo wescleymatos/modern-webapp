@@ -32,7 +32,7 @@ namespace ModernStore.Domain.Handlers
 
             AddNotifications(order.Notifications);
 
-            if (order.IsValid())
+            if (order.Valid)
                 _orderRepository.Save(order);
         }
     }

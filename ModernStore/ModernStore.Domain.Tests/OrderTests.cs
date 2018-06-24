@@ -22,7 +22,7 @@ namespace ModernStore.Domain.Tests
             var order = new Order(customer, 8, 10);
             order.AddItem(new OrderItem(mouse, 2));
 
-            Assert.IsFalse(order.IsValid());
+            Assert.IsFalse(order.Valid);
         }
 
         [TestMethod]

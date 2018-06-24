@@ -1,4 +1,5 @@
 ﻿using FluentValidator;
+using FluentValidator.Validation;
 
 namespace ModernStore.Domain.ValueObjects
 {
@@ -8,8 +9,9 @@ namespace ModernStore.Domain.ValueObjects
         {
             Address = address;
 
-            new ValidationContract<Email>(this)
-                .IsEmail(x => x.Address);
+            new ValidationContract()
+                .Requires()
+                .IsEmail(Address, "Email.Address", "");
         }
 
         public string Address { get; private set; }

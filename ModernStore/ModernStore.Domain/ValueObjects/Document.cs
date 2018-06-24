@@ -1,5 +1,4 @@
 ﻿using FluentValidator;
-using System;
 
 namespace ModernStore.Domain.ValueObjects
 {

@@ -1,4 +1,5 @@
-﻿using FluentValidator;
+﻿
+using FluentValidator.Validation;
 using ModernStore.Domain.Enums;
 using ModernStore.Shared.Entities;
 using System;
@@ -21,9 +22,10 @@ namespace ModernStore.Domain.Entities
             DeliveryFee = deliveryFree;
             Discount = discount;
 
-            new ValidationContract<Order>(this)
-                .IsGreaterThan(x => x.DeliveryFee, 0)
-                .IsGreaterThan(x => x.DeliveryFee, -1);
+            new ValidationContract()
+                .Requires()
+                .IsGreaterThan(DeliveryFee, 0, "Order.DeliveryFee", "Deve ser maior que zero")
+                .IsGreaterThan(DeliveryFee, -1, "Order.DeliveryFee", "Deve ser maior que -1");
         }
 
         public Customer Customer { get; private set; }
@@ -41,7 +43,7 @@ namespace ModernStore.Domain.Entities
         {
             AddNotifications(item.Notifications);
 
-            if (item.IsValid())
+            if (item.Valid)
                 _items.Add(item);
         }
     }

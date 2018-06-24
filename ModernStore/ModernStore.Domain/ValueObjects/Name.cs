@@ -1,4 +1,5 @@
 ﻿using FluentValidator;
+using FluentValidator.Validation;
 
 namespace ModernStore.Domain.ValueObjects
 {
@@ -9,13 +10,12 @@ namespace ModernStore.Domain.ValueObjects
             FirstName = firstName;
             LastName = lastName;
 
-            new ValidationContract<Name>(this)
-                .IsRequired(x => x.FirstName)
-                .HasMaxLenght(x => x.FirstName, 60)
-                .HasMinLenght(x => x.LastName, 3)
-                .IsRequired(x => x.LastName)
-                .HasMaxLenght(x => x.LastName, 60)
-                .HasMinLenght(x => x.LastName, 3);
+            new ValidationContract()
+                .Requires()
+                .HasMaxLen(FirstName, 60, "Name.FirstName", "")
+                .HasMinLen(FirstName, 3, "Name.FirstName", "")
+                .HasMaxLen(LastName, 60, "Name.LastName", "")
+                .HasMinLen(LastName, 3, "Name.LastName", "");
         }
 
         public string FirstName { get; private set; }
