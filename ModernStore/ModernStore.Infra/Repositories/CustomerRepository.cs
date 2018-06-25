@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
+using Dapper;
+using ModernStore.Domain.Commands.Outputs;
 using ModernStore.Domain.Entities;
 using ModernStore.Domain.Repositories;
 using ModernStore.Infra.Contexts;
@@ -26,6 +29,33 @@ namespace ModernStore.Infra.Repositories
             return _context.Customers
                 .Include(x => x.User)
                 .FirstOrDefault(x => x.Id == id);
+        }
+
+        public GetCustomerCommandResult Get(string username)
+        {
+            //Utilizando EF
+
+            //return _context.Customers
+            //    .Include(x => x.User)
+            //    .AsNoTracking()
+            //    .Select(x => new GetCustomerCommandResult
+            //    {
+            //        Name = x.Name.ToString(),
+            //        Document = x.Document.Number,
+            //        Email = x.Email.Address,
+            //        Password = x.User.Password,
+            //        Username = x.User.UserName
+            //    })
+            //    .FirstOrDefault(x => x.Username == username);
+
+            var query = "SELECT * FROM [Nome_Tabela] WHERE username = @username";
+
+            using (var conn = new SqlConnection("ModernStoreConnectionString"))
+            {
+                conn.Open();
+
+                return conn.Query<GetCustomerCommandResult>(query, new { username }).FirstOrDefault();
+            }
         }
 
         public void Save(Customer customer)
