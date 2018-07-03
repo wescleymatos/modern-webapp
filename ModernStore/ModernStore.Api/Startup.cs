@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using ModernStore.Api.Security;
 using ModernStore.Domain.Commands.Handlers;
 using ModernStore.Domain.Repositories;
 using ModernStore.Domain.Services;
@@ -11,6 +13,7 @@ using ModernStore.Infra.Contexts;
 using ModernStore.Infra.Repositories;
 using ModernStore.Infra.Services;
 using ModernStore.Infra.Transactions;
+using System;
 using System.Text;
 
 namespace ModernStore.Api
@@ -35,6 +38,19 @@ namespace ModernStore.Api
             });
             services.AddCors();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("User", policy => policy.RequireClaim("ModernStore", "User"));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("ModernStore", "Admin"));
+            });
+
+            services.Configure<TokenOptions>(options => 
+            {
+                options.Issuer = ISSUER;
+                options.Audience = AUDIENCE;
+                options.SigningCregentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256);
+            });
+
             services.AddScoped<ModernStoreDataContext, ModernStoreDataContext>();
             services.AddTransient<IUow, Uow>();
             services.AddTransient<CustomerHandler, CustomerHandler>();
@@ -49,6 +65,19 @@ namespace ModernStore.Api
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = ISSUER,
+                ValidateAudience = true,
+                ValidAudience = AUDIENCE,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _signingKey,
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
 
             app.UseCors(x =>
             {

@@ -1,5 +1,4 @@
 ﻿using ModernStore.Infra.Contexts;
-using System;
 
 namespace ModernStore.Infra.Transactions
 {
